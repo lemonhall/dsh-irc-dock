@@ -1,0 +1,39 @@
+# ============================================================================
+# dsh-irc-dock —— DSH bundle patch
+# ============================================================================
+# 宿主半（lib/index.js）里是一个最小但完整的 IRC 客户端（node net/tls）：
+#   GET  /dsh-irc/state     连接状态 + 频道 + 消息（可给 since=<seq> 只取增量）
+#   POST /dsh-irc/state     { action: connect|disconnect|join|part|send|clear }
+#   + irc_panel 工具（Agent 侧：看状态、读消息、发消息、进频道）
+# 客户端半（lib/client.js）是右侧栏 tab：频道列表 + 消息流 + 输入框。
+#
+# 连接方式两种（都实测过）：
+#   direct —— 直接 net/tls 连服务器（本机连 Libera 实测可通）
+#   proxy  —— 先跟本机代理做 HTTP CONNECT 建隧道，再套 TLS（Clash 的 7897 支持）
+#
+# ⚠️ 消息**不落盘**（只存内存里的最近若干条）—— 聊天记录写进状态文件没必要，
+#    而且 IRC 本来就该是"看过即过"。持久化的只有频道列表和昵称。
+#
+# 安装：
+#   plugin_manager install_bundle  target=link:E:\development\dsh-irc-dock
+# ⚠️ 客户端半边改动要重启应用；新增宿主路由也要重启（实测）。
+# ============================================================================
+
+- insert:
+    - id: dsh-irc-dock
+      name: dsh-irc-dock
+      config:
+        server: 'irc.libera.chat'
+        port: 6697
+        tls: true
+        # direct = 直连；proxy = 走下面的 proxy 做 HTTP CONNECT 隧道
+        connectMode: 'direct'
+        proxy: 'http://127.0.0.1:7897'
+        nick: 'dsh-dock'
+        # 进服务器后自动加入的频道
+        channels:
+          - '#python'
+        # 内存里保留多少条消息
+        keepMessages: 400
+        # 空闲多久没数据就发一次 PING 保活（秒）
+        pingSeconds: 120

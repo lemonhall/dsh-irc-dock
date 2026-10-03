@@ -1,0 +1,53 @@
+{
+  "name": "dsh-irc-dock",
+  "version": "0.1.0",
+  "description": "DSH 右侧栏的 IRC 客户端：宿主用 node tls/net 直连 IRC（也可选走本机代理的 HTTP CONNECT 隧道），右侧栏收发消息，Agent 也能读和发（irc_panel 工具）。",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "cordis.patch.yml",
+    "icon.svg"
+  ],
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "dsh-bundle",
+    "deepseek-harness",
+    "irc",
+    "chat",
+    "libera",
+    "sidebar"
+  ],
+  "author": "lemonhall",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lemonhall/dsh-irc-dock.git"
+  },
+  "homepage": "https://github.com/lemonhall/dsh-irc-dock#readme",
+  "bugs": {
+    "url": "https://github.com/lemonhall/dsh-irc-dock/issues"
+  },
+  "meta": {
+    "title": "IRC",
+    "description": "右侧栏一个 tab：连 IRC（默认 Libera.Chat）、进频道、收发消息；消息只在内存里，不落盘。"
+  },
+  "icon": "./icon.svg",
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-sidebar-right"
+      ]
+    }
+  }
+}
