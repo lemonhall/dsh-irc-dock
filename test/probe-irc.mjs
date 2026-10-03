@@ -11,8 +11,8 @@
 import net from 'node:net'
 import tls from 'node:tls'
 
-const HOST = 'irc.libera.chat'
-const PORT = 6697
+const HOST = process.argv[2] || 'irc.libera.chat'
+const PORT = Number(process.argv[3]) || 6697
 const PROXY = { host: '127.0.0.1', port: 7897 }
 const TIMEOUT = 12000
 

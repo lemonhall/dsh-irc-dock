@@ -23,17 +23,27 @@
     - id: dsh-irc-dock
       name: dsh-irc-dock
       config:
-        server: 'irc.libera.chat'
-        port: 6697
-        tls: true
+        # 默认 EFnet：实测从本机可达（自签证书，下面 allowSelfSignedCert 放行）。
+        # Libera 更规范，但**这个网络出口必须 SASL 认证**，否则直接被 Closing Link 拒掉 ——
+        # 要连 Libera 就在 $DSH_HOME/dsh-irc-dock/secret.json 里放 { "saslUser": …, "saslPass": … }。
+        server: 'irc.efnet.org'
+        port: 6667
+        # EFnet 的 6697 是自签证书；想用 TLS 就把 tls 打开（allowSelfSignedCert 已放行）
+        tls: false
         # direct = 直连；proxy = 走下面的 proxy 做 HTTP CONNECT 隧道
         connectMode: 'direct'
         proxy: 'http://127.0.0.1:7897'
+        # 自签证书放行（IRC 圈常态；设成 false 走严格校验）
+        allowSelfSignedCert: true
         nick: 'dsh-dock'
         # 进服务器后自动加入的频道
         channels:
           - '#python'
-        # 内存里保留多少条消息
+        # 内存里保留多少条消息（消息不落盘）
         keepMessages: 400
         # 空闲多久没数据就发一次 PING 保活（秒）
         pingSeconds: 120
+        # 断线自动重连（最多 3 次；认证被拒这类问题重连也没用，所以限次）
+        autoReconnect: true
+        maxReconnect: 3
+        reconnectDelayMs: 15000
